@@ -1,25 +1,28 @@
-
-
 // const request = new Request(' https://api.thecatapi.com/v1/breeds/search?q=sib');
 // const request = require('https://doc.siberiancms.com/siberiancms-admins-guide/').request();
-const request = require('request');
+const request = require("request");
 
-let breed = process.argv[2];
-
-request(`https://api.theasdfasdfcatapi.com/v1/breeds/search?q=${breed}`, (error, response, body)=>{
-  if (!error) {
-    const array = JSON.parse(body);
-    if (array.length === 0) {
-      console.log('No breed found');
-    } else {
-      const breed = array[0];
-      let description = breed.description;
-      console.log(description);
+const fetchBreedDescription = function(breedName, callback) {
+  request(`https://api.thecatapi.com/v1/breeds/search?q=${breedName}`,
+    (error, response, body) => {
+      if (!error) {
+        const array = JSON.parse(body);
+        if (array.length === 0) {
+          return callback(true, null);
+        } else {
+          const breed = array[0];
+          let description = breed.description;
+          return callback(error, description);
+        }
+      } else {
+        return `("We found and Error!", error)`;
+        
+      }
     }
-  } else {
-    console.log('We found and Error!', error);
-  }
-});
+  );
+};
+
+module.exports = { fetchBreedDescription };
 
 // const url = request.url;
 // const method = request.method;
@@ -45,4 +48,3 @@ request(`https://api.theasdfasdfcatapi.com/v1/breeds/search?q=${breed}`, (error,
 //   }).catch(error => {
 //     console.error(error);
 //   });
-
